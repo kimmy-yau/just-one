@@ -10,8 +10,10 @@ pyinputplus (https://pypi.org/project/PyInputPlus/)
 wonderwords (https://pypi.org/project/wonderwords/)
 
 ## Installation
+### Prequisites
+Ensure you have python, pyinputplus and wonderwords installed.
 
-Run main.py to start the game!
+Go to the main directory and run main.py to start the game!
 
 ## Roadmap
 
