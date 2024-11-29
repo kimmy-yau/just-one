@@ -19,9 +19,9 @@ Go to the main directory and run main.py to start the game!
 
 There are still some flaws with the game:
 
-- Hints are not checked against the Mystery word.
+- ~~Hints are not checked against the Mystery word.~~ [Fixed]
 - Relies on correct spelling to get the point.
-- Add a skip option if the Mystery word is unknown to players.
+- ~~Add a skip option if the Mystery word is unknown to players.~~ [Fixed]
 
 
 

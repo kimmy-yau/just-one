@@ -12,46 +12,42 @@ def setupPlayers():
     
     return players
 
-def playGame(players):
+def playGame(players:list[Player]):
     points = 0
-
     #Each player takes turn being the Lead Detective.
     for player in players:
         duplicateHints = set()
         allHints = []
         print("\n"+player.playerName+ " will be the Lead Detective. Please look away.")
         time.sleep(3)
-        print("\nChoosing a random word ...")
-        r = RandomWord()
-        word = r.word(include_parts_of_speech=["nouns"])
-        print("****************************")
-        print("****************************")
-        print(f"The word is {word}")
-        print("****************************")
-        print("****************************")
 
         assistantTeam = players.copy()
         assistantTeam.remove(player)
 
+        for x in range(2):
+            word = pickWord()
+            if(x < 1 and pyip.inputYesNo(f"\nProceed with the mystery word : {word} (Y/N)? ", yesVal="Y", noVal="N", caseSensitive=False)== 'Y'):
+                break
+
         #Each Assistant takes turn typing their clue.
         for assistant in assistantTeam:
 
-            print("****************************")
-            print("****************************")
-            print("****************************")
-            print("****************************")
-            hint = str.lower(pyip.inputStr(f"\n{assistant.playerName} - Enter one word hint: ", strip = True))
-            print("****************************")
-            print("****************************")
-            print("****************************")
-            print("****************************")
-            if(not allHints.__contains__(hint) and not duplicateHints.__contains__(hint)):
+            printBlock()
+            while(True):
+                hint = str.lower(pyip.inputStr(f"\n{assistant.playerName} - Enter one word hint: ", strip = True))
+                if(passCheck(hint, word)):
+                    break
+                    
+            if(hint not in allHints and hint not in duplicateHints):
                 allHints.append(hint)
             else:
-                if(allHints.__contains__(hint)):
+                if(hint in allHints):
                     allHints.remove(hint)
-                duplicateHints.add(hint)
-                        
+                    duplicateHints.add(hint)
+
+        if(len(allHints) == 0):
+            allHints.append(duplicateHints.pop())
+
         print("\nLead Detective, here are your clues:")
         
         for index,givenHint in enumerate(allHints, start=1):
@@ -65,10 +61,9 @@ def playGame(players):
         else:
             print(f"\nOh no! That wasn't right! The Mystery word was {word}")
 
-    print(f"\nTeam Score: {points}!")
+        print(f"\nTeam Score: {points}!")
 
-    retry = pyip.inputYesNo("\nDo you want to play again (Y/N)? ",yesVal='Y', noVal='N', caseSensitive=False)
-    if(retry == "Y"):
+    if(pyip.inputYesNo("\nDo you want to play again (Y/N)? ", yesVal='Y', noVal='N', caseSensitive=False) =='Y'):
         return True
     else:
         return False
@@ -85,6 +80,7 @@ def printRules() :
     print("******* How to Play ********")
     print("****************************")
     print("\nEach player will take turns as the Lead Detective. A random Mystery word will be generated. Other players (the Assistants) must type a ONE word clue that is related to the Mystery word.")
+    print("\nThe first Assistant may skip the Mystery word once per round.")
     print("\nThe detectives cannot see each other's answers.")
     print("\nAny clues that match will be discarded!")
     print("\nThe clue word cannot contain any parts of the Mystery word.")
@@ -108,3 +104,22 @@ def printRules() :
     print("****************************")
     print("\nThink outside of the box! Hint word can be obscure but relatable - See Example")
     print("\nGood luck!")
+
+def pickWord():
+    print("\nChoosing a random word ...")
+    r = RandomWord()
+    word = r.word(include_parts_of_speech=["nouns"])
+    printBlock()
+    print(f"The word is {word}")
+    printBlock()
+    
+    return word
+
+def printBlock():
+    print("****************************")
+    print("****************************")
+    print("****************************")
+    print("****************************")
+
+def passCheck(clueWord:str, mysteryWord:str):
+    return clueWord not in mysteryWord
